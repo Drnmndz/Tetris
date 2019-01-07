@@ -1,12 +1,12 @@
 #include <iostream>
 #include "window.hpp"
+#include "mainMenu.hpp"
 
 
 void Window::makeWindow(int const width, int const height)
 {
     sf::RenderWindow window(sf::VideoMode(width, height), "Tetris", sf::Style::Titlebar | sf::Style::Close);
 
-    sf::Event event;
     sf::Texture texture1;
     texture1.loadFromFile("images/simple.png");
 
@@ -30,29 +30,59 @@ void Window::makeWindow(int const width, int const height)
     text.setOutlineThickness(5);
     spritetext.setPosition(sf::Vector2f(250, 500));
 
-    sf::Vector2f position = spritetext.getPosition();
-
     sf::FloatRect textRect = text.getGlobalBounds();
     text.setOrigin(textRect.left + textRect.width/2.0f,textRect.top  + textRect.height/2.0f);
     text.setPosition(sf::Vector2f(width/2.0f,height - 500));
 
     sf::Sprite sprite(texture1);
+
+    Menu menu(window.getSize().x, window.getSize().y);
+
+
     while(window.isOpen())
     {
-        while(window.pollEvent(event)){
-            if(event.type == sf::Event::EventType::Closed){
-                window.close();
+        sf::Event event;
+
+        while(window.pollEvent(event))
+        {
+            switch(event.type)
+            {
+            case sf::Event::KeyReleased:
+                switch(event.key.code)
+                {
+                case sf::Keyboard::Up:
+                    menu.MoveUp();
+                    break;
+
+                case sf::Keyboard::Down:
+                    menu.MoveDown();
+                    break;
+
+                case sf::Keyboard::Return:
+                    switch(menu.GetPressedItem())
+                    {
+                    case 0:
+                        std::cout << "Play button has been pressed" << std::endl;
+                        break;
+                    case 1:
+                        std::cout << "Highscore button has been pressed" << std::endl;
+                        break;
+                    case 2:
+                        window.close();
+                        break;
+                    }
+
+                    break;
+                }
             }
         }
         window.clear();
         window.draw(sprite);
         window.draw(text);
+        menu.draw(window);
         window.display();
     }
 }
 
-void Window::makeTitle()
-{
 
-}
 

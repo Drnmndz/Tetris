@@ -1,5 +1,6 @@
 #include <iostream>
 #include "window.hpp"
+#include "mainMenu.hpp"
 
 int main(){
     Window window;
